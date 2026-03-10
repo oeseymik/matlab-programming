@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int main() {
+    int x[3],y[3];
+    int xn,yn;
+
+    scanf("%d %d",&xn,&yn);//숫자 두 개 입력받음
+    int tmp=xn;
+    for(int i=0;i<3;i++){
+        x[i]=tmp%10;
+        tmp=tmp/10;
+    }
+
+    tmp=yn;
+    for(int i=0;i<3;i++){
+        y[i]=tmp%10;
+        tmp=tmp/10;
+    }//배열에 담음
+
+    int resx=0,resy=0;
+    for(int i=0;i<3;i++){
+        resx=resx*10+x[i];
+        resy=resy*10+y[i];
+    }//배열에 담은 거 하나의 숫자로 만듬
+
+    if(resx>resy)printf("%d\n",resx);
+    else printf("%d\n",resy);//비교하여 출력
+    
+    
+    
+    return 0;
+}
