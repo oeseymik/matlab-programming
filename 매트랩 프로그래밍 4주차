@@ -1,0 +1,90 @@
+//1번
+f=@(x)0.3*x-sin(2*x);
+
+x1=fzero(f,0)
+x2=fzero(f,2.5)
+
+[xmin, ymin]=fminbnd(f,0,4)
+
+f0 = f(0);
+f4 = f(4);
+
+%전역에서 작은지 증명
+compare = [f0, ymin, f4]
+%ymin이 제일 작음
+
+//2번
+function t = kys_25012550_func_2(h, v0, g)
+
+f = @(x) v0*x - 0.5*g*x.^2 - h;
+
+t = [fzero(f,2), fzero(f,8)];
+
+end
+
+t = kys_25012550_func_2(100,50,9.81)
+
+//3번
+function A = kys_25012550_func_3(r)
+
+global V
+
+h = 3*V/(pi*r^2);
+A = pi*r*sqrt(r^2 + h^2);
+
+end
+
+global V
+V = 10;
+
+r_opt = fminbnd(@kys_25012550_func_3,0.1,5);
+h_opt = 3*V/(pi*r_opt^2);
+A_min = kys_25012550_func_3(r_opt);
+
+r = linspace(0.1,5,1000);
+A = arrayfun(@kys_25012550_func_3,r);
+
+figure
+plot(r,A)
+grid on
+
+A_lim = 1.1*A_min;
+idx = find(A<=A_lim);
+r_range = [r(min(idx)) r(max(idx))]
+
+//4번
+f = @(x) 10*exp(-2*x);
+
+x = linspace(0,2,1000);
+figure
+plot(x,f(x))
+grid on
+title('10e^{-2x}')
+xlabel('x')
+ylabel('f(x)')
+
+[xmin,ymin] = fminbnd(f,0,15);
+
+//5번
+f = @(x) 30*x.^2 - 300*x + 4;
+
+x = linspace(0,15,1000);
+figure
+plot(x,f(x))
+grid on
+
+[xmin,ymin] = fminbnd(f,0,15);
+
+//6번
+h = @(z) 6*exp(z);
+g = @(y) 3*cos(y);
+f = @(x) x.^2;
+
+F = @(x) h(g(f(x)));
+
+x = linspace(0,4,1000);
+figure
+plot(x,F(x))
+grid on
+
+
