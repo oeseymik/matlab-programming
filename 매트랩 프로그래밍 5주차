@@ -1,0 +1,53 @@
+//1번
+x=[-2 -1 0 1 2];
+y1=squareVec(x)
+y2=meanVec(x)
+y3=mixedTransform(x)
+
+function y=squareVec(x)
+y=x.^2;
+end
+
+function y=meanVec(x)
+y=sum(x)./5;
+end
+
+function y=mixedTransform(x)
+y=[0 0 0 0 0];
+y(x<0)=abs(x(x<0));
+y(x>0)=2.^x(x>0)+1;
+end 
+
+//2번
+name=input('이름 입력하세요 :','s')
+score=input('점수 입력하세요 :')
+score_avg=sum(score)/3;
+fprintf('%s %d %d %d %.2f\n',name,score(1),score(2),score(3),score_avg)
+
+if score_avg>=90
+    fprintf('Excellent\n')
+elseif score_avg>=80&&score_avg<90
+        fprintf('Good\n')
+elseif score_avg>=70&&score_avg<80
+        fprintf('Fair\n')
+elseif score_avg<70
+        fprintf('Needs Improvement\n')
+end
+      
+
+//3번
+applicants=[165 72 1;172 85 0;168 91 1;181 77 1;174 69 0;169 88 1];
+
+n1=applicants(:,1)>=170
+n2=applicants(:,2)>=80
+n3=applicants(:,3)==1
+
+row=find(n1&n2&n3);
+if size(row,1)==0
+    fprintf('최종 합격자가 없음.\n')
+else
+    fprintf('최종합격자 행 번호: %d\n',row)
+    newvec=[applicants(row,1),applicants(row,2),applicants(row,3)];
+    disp(newvec)
+end
+
