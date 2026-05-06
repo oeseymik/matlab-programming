@@ -1,0 +1,304 @@
+//1번
+x=0:0.05:6*pi;
+y=sin(x)+0.5.*cos(3.*x);
+
+plot(x,y)
+xticks(0:pi:6*pi)
+title('sin(x)+0.5.*cos(3.*x)')
+xlabel('x')
+ylabel('y')
+grid on
+
+//2번
+clear; clc;
+
+x=1:1:50;
+y=3.^x;
+
+figure
+subplot(1,2,1)
+plot(x,y)
+xlabel('x')
+ylabel('y')
+title('plot')
+subplot(1,2,2)
+semilogy(x,y)
+xlabel('x')
+ylabel('y')
+title('semilogy')
+
+//3번
+score=load('score.dat');
+
+figure
+subplot(1,2,1)
+hist(score,5)
+title('score(5)')
+subplot(1,2,2)
+hist(score,10)
+title('score(10)')
+
+//4번
+clear; clc;
+
+figure
+fplot(@(x)sin(x).*exp(-0.1.*x),[0,10*pi])
+%%문자열로 하니 오류가 떠서 함수 핸들 사용했습니다.
+title('sin(x).*exp(-0.1.*x) graph')
+xlabel('x')
+ylabel('y')
+grid on
+
+//5번
+clear; clc;
+
+x=0:0.1:10;
+y1=x.^2;
+y2=exp(0.5.*x);
+
+figure
+plotyy(x,y1,x,y2)
+title('y=x.^2 , y=exp(0.5.*x) graph')
+xlabel('x')
+ylabel('y')
+
+//6번
+clear; clc;
+
+t=0:0.02:12*pi;
+x=(1+0.03.*t).*cos(t);
+y=(1+0.03.*t).*sin(t);
+z=0.2.*t;
+
+plot3(x,y,z)
+title('3D graph')
+xlabel('(1+0.03.*t).*cos(t)')
+ylabel('(1+0.03.*t).*sin(t)')
+zlabel('0.2.*t')
+grid on
+
+//7번
+clear; clc;
+
+x=linspace(-4,4,1000);
+y=linspace(-4,4,1000);
+[X,Y]=meshgrid(x,y);
+Z=X.^2-Y.^2;
+mesh(X,Y,Z)
+
+//8번
+clear; clc;
+
+x=linspace(-2*pi,2*pi,1000);
+y=linspace(-2*pi,2*pi,1000);
+[X,Y]=meshgrid(x,y);
+Z=sin(X).*cos(Y);
+
+subplot(1,2,1)
+mesh(X,Y,Z)
+title('mesh graph')
+subplot(1,2,2)
+contour(X,Y,Z)
+title('contour graph')
+
+//9번
+clear; clc;
+
+t=linspace(0,25,1000);
+y=exp(-0.15.*t).*cos(4.*t);
+env=exp(-0.15.*t);
+
+figure%%(a)
+plot(t,y)
+xlabel('t')
+ylabel('y(t)')
+title('(a)graph')
+grid on
+
+figure%%(b)
+plot(t,y)
+hold on
+plot(t,env)
+plot(t,-env)
+hold off
+xlabel('t')
+ylabel('y(t)')
+title('(b)graph')
+grid on
+
+figure%%(c)
+semilogy(t,abs(y))
+xlabel('t')
+ylabel('|y(t)|')
+title('(c)graph')
+grid on
+
+//10번
+clear; clc;
+
+x=linspace(-6,6,1000);
+y=linspace(-6,6,1000);
+[X,Y]=meshgrid(x,y);
+Z=cos(X).*sin(Y).*exp(-0.05.*(X.^2+Y.^2));
+
+subplot(1,2,1)
+mesh(X,Y,Z)
+title('mesh graph')
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
+
+subplot(1,2,2)
+contour(X,Y,Z)
+title('contour graph')
+xlabel('x')
+ylabel('y')
+grid on
+
+[Zmax,idx]=max(Z(:));
+Xmax=X(idx);
+Ymax=Y(idx);
+
+fprintf('z의 최대값:%f\n위치:(%f,%f)\n',Zmax,Xmax,Ymax);
+
+//11번
+clear; clc;
+
+t=[0 1 2 3 4 5 6];
+C=[12 8.9 6.6 4.9 3.6 2.7 2.0];
+
+figure
+subplot(1,2,1)%%(a)
+plot(t,C)
+title('plot graph')
+xlabel('t')
+ylabel('C')
+grid on
+
+subplot(1,2,2)
+semilogy(t,C)
+title('semilogy graph')
+xlabel('t')
+ylabel('C')
+grid on
+
+k=(log(C(1))-log(C(end)))/(t(end)-t(1));
+fprintf('추정한 k값:%f\n',k)
+
+//12번
+n=1:1:30;
+T1=n;
+T2=n.*log(n);
+T3=n.^2;
+T4=2.^n;
+
+figure
+subplot(1,2,1)
+plot(n,T1,n,T2,n,T3,n,T4)
+legend('T1','T2','T3','T4')
+title('plot graph')
+xlabel('n')
+ylabel('T')
+grid on
+
+subplot(1,2,2)
+semilogy(n,T1,n,T2,n,T3,n,T4)
+title('semilogy graph')
+xlabel('n')
+ylabel('T')
+legend('T1','T2','T3','T4')
+grid on
+
+//16번
+clear; clc;
+
+t=linspace(0,24,1000);
+T=15+10.*sin((pi.*t)/12);
+
+figure
+plot(t,T)
+xlabel('t')
+ylabel('T(t)')
+title('temperture variation')
+grid on
+
+hold on
+
+[Tmax, idx_max] = max(T);
+[Tmin, idx_min] = min(T);
+
+t_max = t(idx_max);
+t_min = t(idx_min);
+
+text(t_max,Tmax,' Max','Color','r')
+text(t_min,Tmin,' Min','Color','b')
+fprintf('최고온도:%f,최저온도:%f\n',Tmax,Tmin)
+
+//17번
+clear; clc;
+
+t=linspace(0,20,1000);
+v=5.*exp(-0.2.*t);
+
+figure
+subplot(1,2,1)
+plot(t,v)
+title('velocity graph')
+xlabel('t')
+ylabel('v')
+grid on
+
+subplot(1,2,2)
+semilogy(t,v)
+title('semilogy velocity graph')
+xlabel('t')
+ylabel('v')
+grid on
+
+//18번
+clear; clc;
+
+A=[4 -1 2;1 3 -1;2 -2 5];
+b=[7;4;10];
+
+a1=A^2
+a2=A.^2
+%%A^2는 행렬곱, A.^2는 원소별 곱으로 나온다.
+
+b1=det(A)
+%%det값이 0이 아니므로 역행렬 존재한다.
+
+c1=inv(A)*b
+c2=A\b
+%%값이 같다.
+
+d=A\b
+
+//19번
+clear; clc;
+
+A=[2 -1;3 4];
+B=[1 0 -2;3 5 1];
+C=[6 -3 4;15 14 -1];
+
+X=A\(C-B)
+
+if isequal(A*X+B,C)
+    fprintf('만족합니다.\n')
+end
+
+%%역행렬 계산을 안해도 되므로 계산속도가 빠르고 더 정확하기 때문임.
+
+//20번
+clear; clc;
+X=[3 7 2 5;5 9 4 6;8 12 7 10;10 15 9 13;14 18 12 16];
+
+total=sum(X);
+a=total./5
+
+Xc=X-mean(X)
+
+S=Xc'*Xc
+
+%%대각원소는 각 변수의 분산을 나타내고, 비대각원소는 변수 간 공분산을 의미한다.
