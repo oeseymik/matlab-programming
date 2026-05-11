@@ -1,0 +1,287 @@
+//1번
+t=0:0.01:30;
+f=exp(-0.12.*t).*sin(5.*t)+0.3*cos(2.*t);
+u=exp(-0.12.*t)+0.3;
+l=-exp(-0.12.*t)-0.3;
+
+figure
+plot(t,f)%%(a)
+hold on
+plot(t,u)
+plot(t,l)%%(b)
+
+idx=find(f(2:end-1)>f(1:end-2)&f(2:end-1)>f(3:end))+1;%%(c)
+
+plot(t(idx),f(idx),'o')%%(d)
+
+xlabel('t')
+ylabel('f(t)')
+title('signal')
+grid on
+
+result = table(t(idx)',f(idx)','VariableNames',{'t','f_t'});
+
+disp(result)%%(e)
+
+//2번
+clear;clc;
+
+x=-5:0.05:5;
+y=-5:0.05:5;
+[X,Y]=meshgrid(x,y);
+Z=sin(X.*Y)./(1+X.^2+Y.^2);%%(a)
+
+figure
+subplot(1,2,1)
+mesh(X,Y,Z)
+title('mesh graph')%%(b)
+
+subplot(1,2,2)
+contour(X,Y,Z,25)
+title('contour graph')
+grid on%%(c)
+
+Zmax=max(abs(Z(:)));
+idx=find(abs(Z)==Zmax);%%(d)
+
+[row,col]=ind2sub(size(Z),idx);
+
+Xmax=X(row,col);
+Ymax=Y(row,col);
+
+disp(Zmax)
+disp([Xmax Ymax])%%(e)
+
+//3번
+clear; clc;
+
+A=[7 2 1;2 6 -2;1 -2 5];
+
+[V,D]=eig(A);
+
+lambda=diag(D);
+[lambda_max,idx]=max(lambda);
+
+v=V(:,idx);
+
+vtoi=v/norm(v);
+
+check=A*v-lambda_max*v;
+
+disp(V)%%(a)
+disp(D)%%(a)
+disp(lambda)%%(b)
+disp(lambda_max)%%(c)
+disp(v)%%(d)
+disp(vtoi)%%(e)
+disp(check)%%(f)
+
+//4번
+clear; clc;
+
+X=[2 5 1;4 8 3;6 11 7;9 15 10;13 20 14];
+
+m=mean(X)%%(a)
+
+Xc=X-m%%(b)
+
+S=Xc'*Xc%%(c)
+
+[V,D]=eig(S);
+
+lambda=diag(D);%%(d)
+
+[max_lambda,idx]=max(lambda);
+max_lambda%%(e)
+
+v=V(:,idx);%%(f)
+
+//5번
+clear; clc;
+
+A=[5 2 -1;-2 6 3;1 -1 7];
+b=[8;5;12];%%(a)
+
+x1=inv(A)*b%%(b)
+x2=A\b%%(c)
+result=x1-x2%%(d)
+value=det(A)%%(e)
+
+//6번
+clear; clc;
+
+x=-6:0.05:6;
+y=-6:0.05:6;
+
+[X,Y]=meshgrid(x,y);
+Z=exp(-0.08*(X.^2+Y.^2)).*cos(3.*X).*sin(2.*Y);%%(a)
+
+figure
+subplot(1,2,1)
+surf(X,Y,Z)
+title('surf graph')%%(b)
+
+subplot(1,2,2)
+contour(X,Y,Z,30)
+title('contour graph')%%(c)
+
+Zmax=max(Z(:))
+Zmin=min(Z(:))%%(d)
+
+idxmax=find(Z==Zmax);
+idxmin=find(Z==Zmin);
+
+[rowmax,colmax] = ind2sub(size(Z),idxmax);
+[rowmin,colmin] = ind2sub(size(Z),idxmin);
+
+Xmax = X(rowmax,colmax);
+Ymax = Y(rowmax,colmax);
+
+Xmin = X(rowmin,colmin);
+Ymin = Y(rowmin,colmin);
+
+disp([Xmax Ymax])
+disp([Xmin Ymin])%%(e)
+
+//7번
+clear; clc;
+
+n=[50 100 200 400 800 1600];
+T=[14 19 30 51 92 170];
+
+figure
+subplot(1,3,1)
+plot(n,T,'o-')
+title('plot graph')%%(a)
+
+subplot(1,3,2)
+semilogx(n,T,'o-')
+title('semilogx graph')%%(b)
+
+subplot(1,3,3)
+semilogy(n,T,'o-')
+title('semilogy graph')%%(c)
+//semilogx 그래프가 가장 직선에 가깝게 보인다.
+
+//8번
+clear; clc;
+
+t=0:0.01:24;
+P=50+18*sin((pi.*t)/12)+6*cos((pi.*t)/4);
+
+figure
+plot(t,P)
+hold on
+title('power consumption')
+xlabel('t(hour)')
+ylabel('P')
+grid on%%(a)
+
+[pmax,idxmax]=max(P);
+fprintf('최대 전력 사용량:%f\n',pmax)%%(b)
+
+tmax=t(idxmax);
+fprintf('최대 전력 사용량이 발생한 시간:%f\n',tmax)%%(c)
+
+[pmin,idxmin]=min(P);
+fprintf('최소 전력 사용량:%f\n',pmin)
+
+tmin=t(idxmin);
+fprintf('최소 전력 사용량이 발생한 시간:%f\n',tmin)%%(d)
+
+plot(tmax,pmax,'ro')
+plot(tmin,pmin,'bo')%%(e)
+
+//9번
+clear; clc;
+
+X=[1 3 0;2 5 1;4 8 3;7 12 5;11 17 9];
+x1=X(:,1)
+x2=X(:,2)
+x3=X(:,3)%%(a)
+
+x1andx2=acos(dot(x1,x2)/(norm(x1)*norm(x2)))*180/pi;%%(b)
+x2andx3=acos(dot(x2,x3)/(norm(x2)*norm(x3)))*180/pi;
+x1andx3 = acos(dot(x1,x3)/(norm(x1)*norm(x3)))*180/pi;%%(c)
+
+theta=[x1andx2 x1andx3 x2andx3]%%(d)
+
+[mintheta,idx]=min(theta);
+
+if idx == 1
+    disp('센서1과 센서2가 가장 비슷함.')
+elseif idx == 2
+    disp('센서1과 센서3이 가장 비슷함.')
+else
+    disp('센서2와 센서3가 가장 비슷함.')
+end%%(e)
+
+//10번
+clear; clc;
+
+A=[9 -2 -1;-2 8 -3;-1 -3 10];
+b=[15;7;11];%%(a)
+
+I=A\b%%(b)
+
+detA=det(A)%%(c)
+
+absI=abs(I)%%(d)
+
+[Imax,idx]=max(abs(I))%%(e)
+
+//11번
+clear; clc;
+
+t=0:0.01:40;
+y=exp(-0.04.*t).*(sin(4.*t)+0.6*sin(9.*t));
+
+figure
+subplot(1,2,1)
+plot(t,y)
+title('plot graph')
+xlabel('t(sec)')
+ylabel('y(t)')%%(a)
+
+u=1.6.*exp(-0.04.*t);
+l=-1.6.*exp(-0.04.*t);%%(b)
+
+hold on
+plot(t,u,'r')
+plot(t,l,'b')
+hold off%%(c)
+
+subplot(1,2,2)
+semilogy(t,abs(y))
+title('semilogy graph')
+xlabel('t(sec)')
+ylabel('|y(t)|')%%(d)
+
+tis0=u(1)
+tis40=u(end)%%(e)
+
+//12번
+clear; clc;
+
+epoch=[1 2 5 10 20 50 100 200];
+loss=[3.1 2.4 1.7 1.2 0.83 0.36 0.14 0.06];
+
+figure
+subplot(1,2,1)
+plot(epoch,loss,'o-')
+title('training loss(plot)')
+xlabel('epoch')
+ylabel('loss')
+grid on%%(a)
+
+subplot(1,2,2)
+semilogy(epoch,loss,'o-')
+title('training loss(semilogy)')
+xlabel('epoch')
+ylabel('loss')
+grid on%%(b)
+
+r=loss(2:end)./loss(1:end-1)%%(c)
+
+rmean=mean(r)%%(d)
+rmean은 0.5902로 전반적으로 감소한다.
