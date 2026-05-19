@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    int t;
+    scanf("%d", &t);
+    
+    while (t--) {
+        int n;
+        scanf("%d", &n);
+        char s[5005];
+        scanf("%s", s);
+        
+        char stack[5005];
+        int top = 0;
+        
+        for (int i = 0; i < n; i++) {
+            if (top > 0 && stack[top - 1] == s[i]) {
+                top--;
+            } else {
+                stack[top++] = s[i];
+            }
+        }
+        
+        printf("%s\n", top == 0 ? "YES" : "NO");
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int t;
+    scanf("%d", &t);
+    
+    while (t--) {
+        int n;
+        scanf("%d", &n);
+        int a[3005];
+        for (int i = 0; i < n; i++) {
+            scanf("%d", &a[i]);
+        }
+        
+        int maxMex = 0;
+        
+        for (int i = 0; i < n; i++) {
+            int x = -a[i];
+            
+            int shifted[3005];
+            for (int j = 0; j < n; j++) {
+                shifted[j] = a[j] + x;
+            }
+            
+            int present[3005] = {0};
+            for (int j = 0; j < n; j++) {
+                if (shifted[j] >= 0 && shifted[j] < 3005) {
+                    present[shifted[j]] = 1;
+                }
+            }
+            
+            int mex = 0;
+            while (present[mex]) {
+                mex++;
+            }
+            
+            maxMex = (mex > maxMex) ? mex : maxMex;
+        }
+        
+        printf("%d\n", maxMex);
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+ 
+long long gcd(long long a, long long b) {
+    while (b) {
+        long long temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+ 
+long long power(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base %= mod;
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = (result * base) % mod;
+        }
+        base = (base * base) % mod;
+        exp /= 2;
+    }
+    return result;
+}
+ 
+int main() {
+    int t;
+    scanf("%d", &t);
+    
+    while (t--) {
+        long long n;
+        scanf("%lld", &n);
+        
+        long long k = 1;
+        long long temp = n;
+        
+        for (long long i = 2; i * i <= n; i++) {
+            int count = 0;
+            while (temp % i == 0) {
+                temp /= i;
+                count++;
+            }
+            
+            if (count > 0) {
+                long long exp = (count + n - 1) / n;
+                for (long long j = 0; j < exp; j++) {
+                    k *= i;
+                }
+            }
+        }
+        
+        if (temp > 1) {
+            k *= temp;
+        }
+        
+        printf("%lld\n", k);
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+ 
+int main() {
+    int t;
+    scanf("%d", &t);
+    
+    while (t--) {
+        int n, m, d;
+        scanf("%d %d %d", &n, &m, &d);
+        
+        int boxesPerTower = d / m + 1;
+        
+        int towers = (n + boxesPerTower - 1) / boxesPerTower;
+        
+        printf("%d\n", towers);
+    }
+    
+    return 0;
+}
+
+#include <stdio.h>
+ 
+int main() {
+    int t;
+    scanf("%d", &t);
+    
+    while (t--) {
+        int n;
+        scanf("%d", &n);
+        char s[55];
+        scanf("%s", s);
+        
+        int visited[55] = {0};
+        int pos = 0;
+        visited[pos] = 1;
+        
+        for (int i = 0; i < n; i++) {
+            if (s[pos] == 'R') {
+                pos++;
+            } else {
+                pos--;
+            }
+            visited[pos] = 1;
+        }
+        
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (visited[i]) count++;
+        }
+        
+        printf("%d\n", count);
+    }
+    
+    return 0;
+}
