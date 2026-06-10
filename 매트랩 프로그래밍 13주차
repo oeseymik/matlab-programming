@@ -1,0 +1,222 @@
+1번
+clear; clc;
+rng(13)
+
+p = 0.35 + (0.95-0.35)*rand(1,40);
+
+R = rand(5000,40);
+correct = R < p;
+
+score = sum(correct,2);
+
+avgScore = mean(score);
+stdScore = std(score);
+
+fprintf('평균 점수 = %.4f\n',avgScore)
+fprintf('표준편차 = %.4f\n',stdScore)
+
+histogram(score)
+xlabel('Score')
+ylabel('Count')
+
+ratio = mean(score >= avgScore);
+fprintf('평균 이상 비율 = %.4f\n',ratio)
+2번
+clear; clc;
+
+W = 100 + 4*randn(10000,20);
+
+boxMean = mean(W,2);
+
+fail = (boxMean < 98) | (boxMean > 102);
+
+failRate = mean(fail);
+
+fprintf('불합격률 = %.4f\n',failRate)
+
+histogram(boxMean)
+xline(98)
+xline(102)
+xlabel('Average Weight')
+ylabel('Count')
+3번
+clear; clc;
+
+N = randn(100000,1);
+
+S = 1.8 + N;
+
+success = S >= 1.2;
+
+successRate = mean(success);
+
+fprintf('감지 성공률 = %.4f\n',successRate)
+
+histogram(S)
+xline(1.2)
+xlabel('Signal Strength')
+ylabel('Count')
+4번
+clear; clc;
+
+orders = poissrnd(180,365,1);
+
+totalTime = zeros(365,1);
+
+for k = 1:365
+    t = 6 + 2*randn(orders(k),1);
+    t(t<0) = 0;
+    totalTime(k) = sum(t);
+end
+
+ratio = mean(totalTime > 1200);
+
+fprintf('1200분 초과 비율 = %.4f\n',ratio)
+
+figure
+plot(orders)
+
+figure
+plot(totalTime)
+
+figure
+scatter(orders,totalTime)
+xlabel('Orders')
+ylabel('Total Time')
+5번
+clear; clc;
+
+X = 25 + 0.8*randn(10000,30);
+
+avgTemp = mean(X,2);
+
+event = (avgTemp >= 24.7) & (avgTemp <= 25.3);
+
+prob = mean(event);
+
+fprintf('확률 = %.4f\n',prob)
+
+singleSensor = X(:,1);
+
+figure
+histogram(singleSensor)
+
+figure
+histogram(avgTemp)
+6번
+clear; clc;
+
+r = 0.0008 + 0.015*randn(5000,60);
+
+asset = 100*cumprod(1+r,2);
+
+finalAsset = asset(:,end);
+
+fprintf('평균 = %.4f\n',mean(finalAsset))
+fprintf('최솟값 = %.4f\n',min(finalAsset))
+fprintf('최댓값 = %.4f\n',max(finalAsset))
+
+prob = mean(finalAsset < 100);
+
+fprintf('100 미만 확률 = %.4f\n',prob)
+
+idx = randperm(5000,30);
+
+plot(asset(idx,:)')
+xlabel('Day')
+ylabel('Asset Value')
+7번
+clear; clc;
+
+arrivalGap = exprnd(8,300,1);
+arrivalTime = cumsum(arrivalGap);
+
+serviceTime = 10 + 3*randn(300,1);
+serviceTime(serviceTime<0) = 1;
+
+startTime = zeros(300,1);
+finishTime = zeros(300,1);
+
+startTime(1) = arrivalTime(1);
+finishTime(1) = startTime(1) + serviceTime(1);
+
+for k = 2:300
+    startTime(k) = max(arrivalTime(k),finishTime(k-1));
+    finishTime(k) = startTime(k) + serviceTime(k);
+end
+
+waitTime = startTime - arrivalTime;
+
+fprintf('평균 대기시간 = %.4f\n',mean(waitTime))
+fprintf('최대 대기시간 = %.4f\n',max(waitTime))
+fprintf('20분 초과 비율 = %.4f\n',mean(waitTime>20))
+
+histogram(waitTime)
+xlabel('Waiting Time')
+ylabel('Count')
+8번
+clear; clc;
+
+p = [0.72 0.81 0.67 0.90 0.76];
+
+R = rand(100000,5);
+
+detect = R < p;
+
+countDetect = sum(detect,2);
+
+success = countDetect >= 3;
+
+prob = mean(success);
+
+fprintf('감지 확률 = %.4f\n',prob)
+
+histogram(countDetect,'BinMethod','integers')
+xlabel('Detected Modules')
+ylabel('Count')
+9번
+clear; clc;
+
+n = 50000;
+
+pass1 = rand(n,1) < 0.94;
+
+pass2 = false(n,1);
+idx1 = find(pass1);
+pass2(idx1) = rand(length(idx1),1) < 0.91;
+
+pass3 = false(n,1);
+idx2 = find(pass1 & pass2);
+pass3(idx2) = rand(length(idx2),1) < 0.88;
+
+finalPass = pass1 & pass2 & pass3;
+
+fprintf('최종 합격률 = %.4f\n',mean(finalPass))
+
+fail1 = sum(~pass1);
+fail2 = sum(pass1 & ~pass2);
+fail3 = sum(pass1 & pass2 & ~pass3);
+passFinal = sum(finalPass);
+
+bar([fail1 fail2 fail3 passFinal])
+xticklabels({'Fail1','Fail2','Fail3','Pass'})
+10번
+clear; clc;
+
+loadVar = 35*randn(10000,1);
+
+overload = rand(10000,1) < 0.12;
+
+power = 500 + loadVar + 120*overload;
+
+ratio = mean(power > 650);
+
+fprintf('650 초과 비율 = %.4f\n',ratio)
+
+histogram(power)
+
+meanOver = mean(power(overload));
+meanNormal = mean(power(~overload));
+
+fprintf('과부하 평균 = %.4f\n',meanOver)
+fprintf('비과부하 평균 = %.4f\n',meanNormal)
