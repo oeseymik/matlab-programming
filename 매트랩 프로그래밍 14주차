@@ -1,0 +1,495 @@
+%%1번
+rng(14)%a
+
+request=poissrnd(18,30,12);%b
+
+dailyTotal=sum(request,2);%c;
+
+busyDay=dailyTotal>=240;%d;
+
+numBusyDay=sum(busyDay);%e;
+
+hourlyMean=mean(request,1);%f
+
+figure;
+plot(1:30,dailyTotal,'k');
+hold on;
+plot(find(busyDay),dailyTotal(busyDay),'ro','MarkerSize',8);%g
+
+xlabel('Day');
+ylabel('Total Requests');
+title('Daily Delivery Request Simulation');%h
+
+%%2번
+clear; clc;
+
+n=3000;%a
+
+interArrival=exprnd(1.2,1,n);%b
+
+arrival=cumsum(interArrival);%c
+
+service=exprnd(0.9,1,n);%d
+
+startTime=zeros(1,n);
+finishTime=zeros(1,n);
+
+for i=1:n
+    if i==1
+        startTime(i)=arrival(i);
+    else
+        startTime(i)=max(arrival(i),finishTime(i-1));
+    end
+    finishTime(i)=startTime(i)+service(i);
+end%e
+
+waitingTime=startTime-arrival;%f
+
+meanWait=mean(waitingTime);
+maxWait=max(waitingTime);
+longWaitRatio=mean(waitingTime>=5);%g
+
+figure
+histogram(waitingTime,40);%h
+title('Waiting Time Distribution in a Data Center Queue');%i
+
+%%3번
+clear; clc;
+
+n=100000;%a
+p1=0.97;
+p2=0.95;
+p3=0.96;
+p4=0.92;
+c1=rand(1,n)<p1;
+c2=rand(1,n)<p2;
+c3=rand(1,n)<p3;
+c4=rand(1,n)<p4;%b
+
+systemWorking=c1&c2&c3&c4;%c
+
+reliabilityEst=mean(systemWorking);%d
+
+reliabilityTrue=0.97*0.95*0.96*0.92;%e
+
+absError=abs(reliabilityEst-reliabilityTrue);%f
+
+failCounts=[sum(~c1),sum(~c2),sum(~c3),sum(~c4),sum(~systemWorking)];%g
+
+figure('Color','w')
+bar(failCounts)
+xticklabels({'C1','C2','C3','C4','System'});%h
+
+%%4번
+clear; clc;
+
+n=50000;
+batteryLife=9.5+1.2*randn(1,n);%a
+
+lowBattery=batteryLife<8;%b
+
+normalBattery=batteryLife>=8&batteryLife<11;%c
+
+excellentBattery=batteryLife>=11;%d
+
+gradeCounts=[sum(lowBattery),sum(normalBattery),sum(excellentBattery)];%e
+
+gradeRatio=gradeCounts/n;%f
+
+figure
+histogram(batteryLife,50);
+xline(8)
+xline(11)%g
+
+figure
+bar(gradeCounts)%h
+
+%%5번
+clear; clc;
+
+n=20000;%a
+
+hasClaim=rand(1,n)<0.06;%b
+
+claimAmount=800+250*randn(1,n);%c
+
+claimAmount(claimAmount<0)=0;%d
+
+claimPayment=hasClaim.*claimAmount;%e
+
+totalPayment=sum(claimPayment);
+meanPayment=mean(claimPayment);
+meanClaimOnly=mean(claimPayment(claimPayment>0));%f
+
+numLargeClaim=sum(claimPayment>=1200);%g
+
+figure
+histogram(claimPayment)
+title('Total claimPayment')
+
+figure
+histogram(claimPayment(claimPayment>0))
+title('claimPayment>0')
+
+%%6번
+clear; clc;
+
+n=1000;
+m=100;%a
+
+steps=rand(n,m)<0.56;%오른쪽이동이 1
+steps(steps==0)=-1;%b
+
+walks=cumsum(steps);%c
+
+figure
+plot(walks)
+grid on%d
+
+finalPosition=walks(end,:);%e
+
+meanFinal=mean(finalPosition);
+stdFinal=std(finalPosition);%f
+
+rightDriftRatio=mean(finalPosition>=100);%g
+
+figure
+histogram(finalPosition,30)%h
+
+%%7번
+clear; clc;
+
+rng(7)%a
+
+t=linspace(0,30,300);%b
+
+trueSignal=2*sin(0.4*t)+0.7*cos(1.5*t);%c
+
+obsSignal=trueSignal+0.25*randn(size(t));%d
+
+idx=randperm(length(t),45);
+obsSignal(idx)=NaN;%e
+
+valid=~isnan(obsSignal);%f
+
+recLinear=interp1(t(valid),obsSignal(valid),t,'linear');%g
+
+recSpline=interp1(t(valid),obsSignal(valid),t,'spline');%h
+
+rmseLinear = sqrt(mean((trueSignal-recLinear).^2));
+rmseSpline = sqrt(mean((trueSignal-recSpline).^2));%i
+
+figure
+plot(t,trueSignal,'b');
+hold on
+plot(t,obsSignal,'r');
+plot(t,recLinear,'y');
+plot(t,recSpline,'g');
+
+legend('trueSignal','obsSignal','recLinear','recSpline')%j
+
+%%8번
+clear; clc;
+
+timeObs=[0 3 6 9 12 15 18 21 24];
+windObs=[3.1 3.8 5.4 7.2 8.0 7.1 5.6 4.2 3.5];%a
+
+timeHourly=0:24;%b
+
+windLinear=interp1(timeObs,windObs,timeHourly,'linear');%c
+windSpline=interp1(timeObs,windObs,timeHourly,'spline');%d
+
+diffWind=windSpline-windLinear;%e
+
+maxDiff=max(abs(diffWind));%f
+
+figure
+plot(timeObs,windObs,'o');
+hold on;
+plot(timeHourly,windLinear,'b');
+plot(timeHourly,windSpline,'g');
+legend('dataObs','linear','Spline');%g
+
+figure
+plot(timeHourly,diffWind)
+
+%%9번
+clear; clc
+[X,Y]=meshgrid(1:5,1:5);%a
+
+H=[12 14 16 15 13;13 18 22 20 16;15 23 31 25 18;14 20 26 24 17;11 15 18 16 14];%b
+
+[Xq,Yq]=meshgrid(1:0.1:5,1:0.1:5);%c
+
+HqLinear=interp2(X,Y,H,Xq,Yq,'linear');%d
+
+HqSpline=interp2(X,Y,H,Xq,Yq,'spline');%e
+
+figure;
+tiledlayout(1,3);%f
+
+nexttile;
+surf(X,Y,H);
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('H');
+title('original');
+
+nexttile;
+surf(Xq,Yq,HqLinear);
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('H');
+title('Linear');
+
+nexttile;
+surf(Xq,Yq,HqSpline);
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('H');
+title('Spline');%g
+
+%%10번
+clear; clc;
+
+tObs=[0 1.2 2.8 4.5 7.0 8.1 9.7 12.0];
+cObs=[5.0 6.4 9.1 8.6 6.8 5.9 5.2 4.8];%a
+
+tq=0:0.1:12;%b
+
+cqLinear=interp1(tObs,cObs,tq,'linear');%c
+
+cqSpline=interp1(tObs,cObs,tq,'spline');%d
+
+deltaC=diff(cqLinear);%e
+
+[~,idxMaxChange]=max(abs(deltaC));%f
+
+changeInterval=[tq(idxMaxChange),tq(idxMaxChange+1)];%g
+
+figure('Color','w');
+plot(tObs,cObs,'k');
+hold on;
+plot(tq,cqLinear,'b');
+plot(tq,cqSpline,'g');
+xline(changeInterval(1),'--k');
+xline(changeInterval(2),'--k');
+plot(changeInterval(1),cqLinear(idxMaxChange),'ro','MarkerSize',10)
+plot(changeInterval(2),cqLinear(idxMaxChange+1),'ro','MarkerSize',10)
+grid on;%h
+
+%%11번
+clear; clc;
+
+t=linspace(0,80,12000);%a
+
+y=exp(-0.04*t).*sin(2*t)+0.3*exp(-0.01*t).*cos(7*t);%b
+
+figure('Color','w');%c
+
+plot(t,y,'LineWidth',1.3);%d
+
+yline(0);%e
+
+xlabel('Time');
+ylabel('Signal Amplitude');
+title('High-Resolution Damped Oscillatory Signal');%f
+
+xlim([0 80]);
+grid on;
+box on;%g
+
+set(gca,'FontSize',12,'LineWidth',1.2);%h
+
+exportgraphics(gcf,'damped_signal.png','Resolution',300);%i
+
+%%12번
+clear; clc;
+
+x=linspace(-5,5,600);
+y=linspace(-5,5,600);%a
+
+[X,Y]=meshgrid(x,y);%b
+
+Z=exp(-0.06*(X.^2+Y.^2)).*sin(4*X).*cos(3*Y)+0.2*sin(X.*Y);%c
+
+figure('Color','w');
+surf(X,Y,Z);%d
+shading interp;
+colormap(jet);
+colorbar;%e
+xlabel('X');
+ylabel('Y');
+zlabel('Z');%f
+title('Detailed Surface Plot with Oscillation and Damping');%g
+view(45,30);
+camlight headlight;
+lighting phong;%h
+
+maxZ=max(Z(:));
+minZ=min(Z(:));%i
+
+[maxZ,idxMax]=max(Z(:));
+[minZ,idxMin]=min(Z(:));
+
+[rowMax,colMax]=ind2sub(size(Z),idxMax);
+[rowMin,colMin]=ind2sub(size(Z),idxMin);
+
+maxPoint=[X(rowMax,colMax),Y(rowMax,colMax),maxZ];
+minPoint=[X(rowMin,colMin),Y(rowMin,colMin),minZ];%j
+
+%%13번
+clear; clc;
+
+x=linspace(-8,8,800);
+y=linspace(-8,8,800);%a
+
+[X,Y]=meshgrid(x,y);%b
+
+Z=(cos(2*X).*sin(3*Y))/(1+0.1*(X.^2+Y.^2));%c
+
+figure;
+contourf(X,Y,Z,70,'LineColor','none');%d
+colormap(parula);
+colorbar;
+axis equal;
+grid on;
+box on;%e
+xlabel('X coordinate');
+ylabel('Y coordinate');%f
+title('High-Resolution Filled Contour of a Damped Oscillatory Field');%g
+set(gca,'FontSize',12,'LineWidth',1.2);%h
+
+%%14번
+clear; clc;
+
+x=linspace(-4,4,300);
+y=linspace(-4,4,300);%a
+
+[X,Y]=meshgrid(x,y);%b
+
+Z1=sin(X).*cos(Y);
+Z2=exp(-0.08*(X.^2+Y.^2));
+Z3=sin(X.^2+Y.^2);%c
+
+figure
+t=tiledlayout(1,3);
+t.TileSpacing='compact';
+t.Padding='compact';%d
+
+nexttile;
+surf(X,Y,Z1);%e
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('Z1');
+view(45,30);
+
+
+nexttile;
+surf(X,Y,Z2);
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('Z2');
+view(45,30);
+
+nexttile;
+surf(X,Y,Z3);
+shading interp;
+colorbar;
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('Z3');
+view(45,30);
+
+title(t,'Comparison of Three Surface Structures');%h
+
+%%15번
+clear; clc;
+
+u=linspace(0,8*pi,500);
+v=linspace(-pi,pi,180);%a
+
+[U,V]=meshgrid(u,v);%b
+
+X=(2+0.4*cos(V)).*cos(U);
+Y=(2+0.4*cos(V)).*sin(U);
+Z=0.25*U+0.4*sin(V);%c
+
+figure;
+surf(X,Y,Z);%d
+shading interp;
+colormap(parula);
+colorbar;%e
+xlabel('X');
+ylabel('Y');
+zlabel('Z');%f
+title('Twisted Parametric Ribbon Surface');%g
+axis equal;
+axis tight;
+grid on;
+view(45,35);%h
+
+exportgraphics(gcf,'twisted_ribbon.png','Resolution',300);%i
+
+%%16번
+clear; clc;
+
+rng(3);%a
+
+time=linspace(0,60,6000);
+signal=sin(0.5*time)+0.4*sin(3*time)+0.15*randn(size(time));%b
+
+trend=movmean(signal,200);%c
+
+x=linspace(-5,5,300);
+y=linspace(-5,5,300);
+[X,Y]=meshgrid(x,y);%d
+
+Z=exp(-0.05*(X.^2+Y.^2)).*cos(3*X).*sin(2*Y);%e
+
+t=tiledlayout(2,2);
+t.TileSpacing='compact';
+t.Padding='compact';%f
+
+nexttile;
+plot(time,signal,'k',time,trend,'b');%g
+xlabel('t');
+ylabel('signal and trend');
+title('signal and trend graph');
+colorbar;
+grid on;%j
+
+nexttile;
+surf(X,Y,Z);%h
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('surf graph');
+colorbar;
+grid on;%j
+
+nexttile;
+contourf(X,Y,Z,50,'LineColor','none');%i
+xlabel('X');
+ylabel('Y');
+zlabel('Z');
+title('contourf graph');
+colorbar;
+grid on;%j
+
+title(t,'Integrated Visualization Dashboard');%k
+
+exportgraphics(gcf,'visualization_dashboard.png','Resolution',300);%l
